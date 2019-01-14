@@ -3,6 +3,10 @@ VF3 algorithm is the fastest sequential algorithm to solve subgraph isomorphism 
 
 This library, written in C++11, contains the official implementations of VF2-Plus, VF3, VF3L realized by the authors.
 
+The library contains solvers for: 
+* Graph Isomorphism
+* Subgraph Isomorphism
+
 If you use VF3 please don't forget to cite us!
 
 References.
