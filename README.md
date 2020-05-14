@@ -29,6 +29,6 @@ If you wish to use the sequential version of VF (VF3 or VF3L)
 
 > vf3 [pattern] [target]
 
-'''
+```bash
 $./bin/vf3 ./test/bvg1.sub.grf ./test/bvg1.grf
-'''bash
+```
