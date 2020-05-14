@@ -45,13 +45,58 @@ The following additional parameters can be added to the commandline:
   * vf: stanard VF file format. Commonl used by the MIVIA Graph datasets
   * edge: Edge file format commonly used on VLDB datasets such as (Patents, WebGoole, etc...)
 
-
+### VF3P additional parameters
 The parallel version has the following extra parameters:
 * -a Version of the paralle strategy to be used: (Mandatory)
-  1. Parallel Version using the Global State Stack (GSS) only
-  2. Parallel Version using the additional Local State Stack (LSS).
+  1. (1) Parallel Version using the Global State Stack (GSS) only
+  2. (2) Parallel Version using the additional Local State Stack (LSS).
 * -t Number of thread to be used (Mandatory)
 * -c First CPU to be used when the thread are pinned on CPUs. The threads are pinned on different successive CPUs starting from the one has been specified. If 0 the pinning is disabled. (Default: 0)
 * -l LSS size limit. Maximum number of states in the LSS. Value 0 correspond to the pattern size (Default: 0)
 * -h GSS depth limit. The states belonging to the first "h" levels of the State Space are forced to be put in the GSS. 0 means only the first state is put in the GSS (Default 3)
 * -k Use a lock-free stack as GSS
+
+## VF File Formats
+
+### Binary
+The file is composed by a sequence of 16-bit words; the words are encoded in little-endian format (e.g., LSB first).
+The first word represents the number of nodes in the graph. Then, for each node, there is a word encoding the number of edges coming out of that node, followed by a sequence of words encoding the endpoints of those edges.
+An example, represented in hexadecimal, follows:
+
+```
+    03 00     Number of nodes (3)
+    00 00     Number of edges out of node 0 (0)
+    02 00     Number of edges out of node 1 (2)
+    00 00     Target of the first edge of node 1 (edge 1 -> 0)
+    02 00     Target of the second edge of node 1 (edge 1 -> 2)
+    01 00     Number of edges out of node 2 (1)
+    00 00     Target of the first (and only) edge of node 2 (edge 2 -> 0)
+```
+    
+### Text
+On the first line there must be the number of nodes; subsequent lines will contain the node attributes, one node per line, preceded by the node id; node ids must be in the range from 0 to the number of nodes - 1.
+Then, for each node there is the number of edges coming out of the node, followed by a line for each edge containing the ids of the edge ends and the edge attribute. 
+Blank lines, and lines starting with #, are ignored.
+An example file, where both node and edge attributes are ints, could be the following:
+
+```
+# Number of nodes
+3
+
+# Node attributes
+0 27
+1 42
+2 13	 
+
+# Edges coming out of node 0\n
+2
+0 1  24
+0 2  73
+
+# Edges coming out of node 1
+1
+1 3  66
+
+# Edges coming out of node 2
+0
+```
