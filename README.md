@@ -1,19 +1,20 @@
 # vf3lib
 VF3 algorithm is the fastest sequential algorithm to solve subgraph isomorphism on large and dense graphs.
 
-Extremely efficient in time and memory! 
+*Extremely efficient in time and memory! 
 
 This library, written in C++11, contains the official implementations of VF2-Plus, VF3, VF3L realized by the authors.
-The latest version of vf3lib includes new graph loaders and the latest parallel versions of VF3L, designed to speed-up the
-algorithm on multicore architectures.
+The latest version of vf3lib includes new graph loaders and the parallel versions of VF3L, designed to speed-up the algorithm on multicore architectures.
 
-The library contains solvers for: 
+The library is allows to solve: 
 * Graph Isomorphism
 * Subgraph Isomorphism
+* Monomorphism (Non-induced subgraph isomorphism) - *Very Soon!
+
+## References
 
 If you use VF3 please don't forget to cite us!
 
-References.
 1. Challenging the time complexity of exact subgraph isomorphism for huge and dense graphs with VF3 - Carletti V., Foggia P., Saggese A., Vento M. - IEEE transactions on pattern analysis and machine intelligence - 2018
 2. Introducing VF3: A new algorithm for subgraph isomorphism - Carletti V., Foggia P., Saggese A., Vento M. - International Workshop on Graph-Based Representations in Pattern Recognition - 2017
 3. Comparing performance of graph matching algorithms on huge graphs - Carletti V., Foggia P., Saggese A., Vento M. - Pattern Recognition Letters - 2018
