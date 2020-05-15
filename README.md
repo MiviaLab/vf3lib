@@ -55,7 +55,7 @@ The parallel version has the following extra parameters:
 * -h GSS depth limit. The states belonging to the first "h" levels of the State Space are forced to be put in the GSS. 0 means only the first state is put in the GSS (Default 3)
 * -k Use a lock-free stack as GSS
 
-## Dataset
+## Datasets
 VF3 has been benchmarked on the following databases of graphs:
 * [MIVIA ARG](https://mivia.unisa.it/datasets/graph-database/arg-database/)
 * [MIVIA LDG](https://mivia.unisa.it/datasets/graph-database/mivia2-graph-database/)
@@ -69,13 +69,13 @@ The first word represents the number of nodes in the graph. Then, for each node,
 An example, represented in hexadecimal, follows:
 
 ```
-    03 00     Number of nodes (3)
-    00 00     Number of edges out of node 0 (0)
-    02 00     Number of edges out of node 1 (2)
-    00 00     Target of the first edge of node 1 (edge 1 -> 0)
-    02 00     Target of the second edge of node 1 (edge 1 -> 2)
-    01 00     Number of edges out of node 2 (1)
-    00 00     Target of the first (and only) edge of node 2 (edge 2 -> 0)
+03 00     Number of nodes (3)
+00 00     Number of edges out of node 0 (0)
+02 00     Number of edges out of node 1 (2)
+00 00     Target of the first edge of node 1 (edge 1 -> 0)
+02 00     Target of the second edge of node 1 (edge 1 -> 2)
+01 00     Number of edges out of node 2 (1)
+00 00     Target of the first (and only) edge of node 2 (edge 2 -> 0)
 ```
     
 ### Text
