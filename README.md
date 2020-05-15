@@ -57,6 +57,12 @@ The parallel version has the following extra parameters:
 * -h GSS depth limit. The states belonging to the first "h" levels of the State Space are forced to be put in the GSS. 0 means only the first state is put in the GSS (Default 3)
 * -k Use a lock-free stack as GSS
 
+## Dataset
+VF3 has been benchmarked on the following databases of graphs:
+* [MIVIA ARG](https://mivia.unisa.it/datasets/graph-database/arg-database/)
+* [MIVIA LDG](https://mivia.unisa.it/datasets/graph-database/mivia2-graph-database/)
+* MIVIA Biological Database
+
 ## VF File Formats
 
 ### Binary
