@@ -1,8 +1,8 @@
 # vf3lib
 vf3lib is a software library containing all the currently published versions of VF3, the fastest algorithm to solve subgraph isomorphism on large and dense graphs. *Extremely efficient in time and memory!* 
 
-This library, written in C++11, contains the official implementations of VF2-Plus, VF3, VF3L realized by the authors.
-The latest version of vf3lib includes new graph loaders and the parallel versions of VF3L, designed to speed-up the algorithm on multicore architectures.
+This library, written in C++11, contains the official implementations of VF2-Plus, VF3, VF3L, VF3P realized by the authors.
+The latest version of vf3lib includes new graph loaders and the parallel versions of VF3L (VF3P), designed to effectively speed-up the algorithm on multicore architectures.
 
 The library is allows to solve: 
 * Graph Isomorphism
