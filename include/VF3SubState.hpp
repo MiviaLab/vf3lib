@@ -32,8 +32,6 @@ namespace vflib
 		class VF3SubState : public State
 	{
 	private:
-
-		bool induced;
 		//Comparison functors for nodes and edges
 		NodeComparisonFunctor nf;
 		EdgeComparisonFunctor ef;

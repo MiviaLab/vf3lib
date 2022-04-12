@@ -115,7 +115,7 @@ bool GetOptions(Options &opt, int argc, char **argv)
 			case 'r':
 				opt.repetitionTimeLimit = atof(optarg);
         break;
-      case 'u':
+      		case 'u':
 				opt.undirected = true;
 				break;
 			case 'v':

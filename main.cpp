@@ -188,7 +188,6 @@ int32_t main(int32_t argc, char** argv)
 
 			state_t s0(&patt_graph, &targ_graph, class_patt.data(), class_targ.data(), classes_count, sorted.data());
 			me->FindAllMatchings(s0);
-
 			#ifdef TRACE
 			me->FlushTrace();
 			#endif
@@ -216,7 +215,6 @@ int32_t main(int32_t argc, char** argv)
 		}
 	}
 
-
 	#endif
 	sols = me->GetSolutionsCount();
 	if(opt.verbose)
@@ -226,10 +224,10 @@ int32_t main(int32_t argc, char** argv)
 		std::cout<<"Solutions: "<<sols<<std::endl;
 	}else
 	{
-		std::cout << sols << " " << timeFirst << " " << timeAll;
+		std::cout << sols << " " << timeFirst << " " << timeAll <<std::endl;
 	}
 	delete me;
-  delete pattloader;
-  delete targloader;
+  	delete pattloader;
+  	delete targloader;
 	return 0;
 }

@@ -1,9 +1,9 @@
 CC=g++
-CFLAGS= -std=c++11 -march=native -O3 -Wno-deprecated
+CFLAGS= -std=c++11 -O3 -Wno-deprecated
 LDFLAGS= -lpthread -latomic
 CPPFLAGS= -I./include
 
-all: vf3 vf3p vf3l
+all: vf3 vf3l 
 
 vf3:
 	$(CC) $(CFLAGS) $(CPPFLAGS) -o bin/$@ main.cpp -DVF3

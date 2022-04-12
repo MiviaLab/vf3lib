@@ -109,6 +109,7 @@ namespace vflib
 		virtual void ResetSolutionCounter()
 		{
 			solCount = 0;
+			solutions.clear();
 		}
 
 		inline struct timeval GetFirstSolutionTime()
@@ -300,7 +301,6 @@ namespace vflib
 				{
 					VFState s1(s);
 					s1.AddPair(n1, n2);
-
 					#ifdef TRACE
 					// feasible candidate
 					trace->SetFeasible();
