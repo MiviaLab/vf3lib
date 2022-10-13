@@ -8,6 +8,9 @@ all: vf3 vf3l
 vf3:
 	$(CC) $(CFLAGS) $(CPPFLAGS) -o bin/$@ main.cpp -DVF3
 
+vf3.so:
+	$(CC) $(CFLAGS) $(CPPFLAGS) -fPIC -shared -o bin/$@ main.cpp -DVF3
+
 vf3l:
 	$(CC) $(CFLAGS) $(CPPFLAGS) -o bin/$@ main.cpp -DVF3L
 
