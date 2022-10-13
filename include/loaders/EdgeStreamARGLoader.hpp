@@ -45,8 +45,8 @@ class EdgeStreamARGLoader : public ARGLoader<Node, Edge> {
   Edge edge_attribute;
   uint32_t node_count;
   std::vector<nodeID_t> forward, backward;
-  std::vector<std::map<nodeID_t, Empty> > edges;
-  typename std::map<nodeID_t, Empty>::iterator edge_iterator;
+  std::vector<std::map<nodeID_t, Edge> > edges;
+  typename std::map<nodeID_t, Edge>::iterator edge_iterator;
   nodeID_t last_edge_node;
   uint32_t last_edge_index;
   void skipHeading(std::istream &in);

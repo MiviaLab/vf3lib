@@ -65,9 +65,10 @@ std::string& remove_chars(std::string& s, const std::string& chars) {
 
 static long long state_counter = 0;
 
-int32_t main(int32_t argc, char** argv) {
-  Options opt;
-
+template <typename Node, typename Edge, typename StateType>
+void solve(Options& opt, std::istream& graphInPat, std::istream& graphInTarg,
+           struct timeval& start) {
+  struct timeval loading, fastcheck, classification, iter, end;
   uint32_t n1, n2;
   double timeAll = 0;
   double totalExecTime = 0;
@@ -75,7 +76,6 @@ int32_t main(int32_t argc, char** argv) {
   double timeLast = 0;
   double timeLoad = 0;
   int rep = 0;
-  struct timeval start, loading, fastcheck, classification, iter, end;
   std::vector<MatchingSolution> solutions;
   std::vector<uint32_t> class_patt;
   std::vector<uint32_t> class_targ;
@@ -83,6 +83,113 @@ int32_t main(int32_t argc, char** argv) {
 
   state_counter = 0;
   size_t sols = 0;
+
+  ARGLoader<Node, Edge>* pattloader = CreateLoader<Node, Edge>(opt, graphInPat);
+  ARGLoader<Node, Edge>* targloader =
+      CreateLoader<Node, Edge>(opt, graphInTarg);
+
+  ARGraph<Node, Edge> patt_graph(pattloader);
+  ARGraph<Node, Edge> targ_graph(targloader);
+
+  if (opt.verbose) {
+    gettimeofday(&loading, NULL);
+    timeLoad = GetElapsedTime(start, loading);
+    std::cout << "Loaded in: " << timeLoad << std::endl;
+  }
+
+  n1 = patt_graph.NodeCount();
+  n2 = targ_graph.NodeCount();
+
+  MatchingEngine<StateType>* me = CreateMatchingEngine<StateType>(opt);
+
+  if (!me) {
+    exit(-1);
+  }
+
+  gettimeofday(&start, NULL);
+  FastCheck<Node, Node, Edge, Edge> check(&patt_graph, &targ_graph);
+  if (check.CheckSubgraphIsomorphism()) {
+    if (opt.verbose) {
+      gettimeofday(&fastcheck, NULL);
+      timeLoad = GetElapsedTime(start, fastcheck);
+      std::cout << "FastCheck in: " << timeLoad << std::endl;
+    }
+
+    gettimeofday(&start, NULL);
+    NodeClassifier<Node, Edge> classifier(&targ_graph);
+    NodeClassifier<Node, Edge> classifier2(&patt_graph, classifier);
+    class_patt = classifier2.GetClasses();
+    class_targ = classifier.GetClasses();
+    classes_count = classifier.CountClasses();
+
+    if (opt.verbose) {
+      gettimeofday(&classification, NULL);
+      timeLoad = GetElapsedTime(start, classification);
+      std::cout << "Classification in: " << timeLoad << std::endl;
+    }
+  }
+
+#ifndef TRACE
+  do {
+    rep++;
+    me->ResetSolutionCounter();
+
+    gettimeofday(&iter, NULL);
+#endif
+    if (check.CheckSubgraphIsomorphism()) {
+      VF3NodeSorter<Node, Edge, SubIsoNodeProbability<Node, Edge> > sorter(
+          &targ_graph);
+      std::vector<nodeID_t> sorted = sorter.SortNodes(&patt_graph);
+
+#ifdef TRACE
+      me->InitTrace(outfilename);
+#endif
+
+      StateType s0(&patt_graph, &targ_graph, class_patt.data(),
+                   class_targ.data(), classes_count, sorted.data());
+      me->FindAllMatchings(s0);
+#ifdef TRACE
+      me->FlushTrace();
+#endif
+    }
+
+#ifndef TRACE
+    gettimeofday(&end, NULL);
+
+    totalExecTime += GetElapsedTime(iter, end);
+    end = me->GetFirstSolutionTime();
+    timeFirst += GetElapsedTime(iter, end);
+  } while (totalExecTime < opt.repetitionTimeLimit);
+  timeAll = totalExecTime / rep;
+  timeFirst /= rep;
+
+  if (opt.storeSolutions) {
+    me->GetSolutions(solutions);
+    std::cout << "Solution Found" << std::endl;
+    std::vector<MatchingSolution>::iterator it;
+    for (it = solutions.begin(); it != solutions.end(); it++) {
+      std::cout << me->SolutionToString(*it) << std::endl;
+    }
+  }
+
+#endif
+  sols = me->GetSolutionsCount();
+  if (opt.verbose) {
+    std::cout << "First Solution in: " << timeFirst << std::endl;
+    std::cout << "Matching Finished in: " << timeAll << std::endl;
+    std::cout << "Solutions: " << sols << std::endl;
+
+  } else {
+    std::cout << sols << " " << timeFirst << " " << timeAll << std::endl;
+  }
+  delete me;
+  delete pattloader;
+  delete targloader;
+}
+
+int32_t main(int32_t argc, char** argv) {
+  Options opt;
+  struct timeval start;
 
 #ifndef WIN32
   std::signal(SIGKILL, sig_handler);
@@ -121,107 +228,12 @@ int32_t main(int32_t argc, char** argv) {
 
   std::ifstream graphInPat(opt.pattern);
   std::ifstream graphInTarg(opt.target);
-
-  ARGLoader<data_t, Empty>* pattloader =
-      CreateLoader<data_t, Empty>(opt, graphInPat);
-  ARGLoader<data_t, Empty>* targloader =
-      CreateLoader<data_t, Empty>(opt, graphInTarg);
-
-  ARGraph<data_t, Empty> patt_graph(pattloader);
-  ARGraph<data_t, Empty> targ_graph(targloader);
-
-  if (opt.verbose) {
-    gettimeofday(&loading, NULL);
-    timeLoad = GetElapsedTime(start, loading);
-    std::cout << "Loaded in: " << timeLoad << std::endl;
-  }
-
-  n1 = patt_graph.NodeCount();
-  n2 = targ_graph.NodeCount();
-
-  MatchingEngine<state_t>* me = CreateMatchingEngine(opt);
-
-  if (!me) {
-    exit(-1);
-  }
-
-  gettimeofday(&start, NULL);
-  FastCheck<data_t, data_t, Empty, Empty> check(&patt_graph, &targ_graph);
-  if (check.CheckSubgraphIsomorphism()) {
-    if (opt.verbose) {
-      gettimeofday(&fastcheck, NULL);
-      timeLoad = GetElapsedTime(start, fastcheck);
-      std::cout << "FastCheck in: " << timeLoad << std::endl;
-    }
-
-    gettimeofday(&start, NULL);
-    NodeClassifier<data_t, Empty> classifier(&targ_graph);
-    NodeClassifier<data_t, Empty> classifier2(&patt_graph, classifier);
-    class_patt = classifier2.GetClasses();
-    class_targ = classifier.GetClasses();
-    classes_count = classifier.CountClasses();
-
-    if (opt.verbose) {
-      gettimeofday(&classification, NULL);
-      timeLoad = GetElapsedTime(start, classification);
-      std::cout << "Classification in: " << timeLoad << std::endl;
-    }
-  }
-
-#ifndef TRACE
-  do {
-    rep++;
-    me->ResetSolutionCounter();
-
-    gettimeofday(&iter, NULL);
-#endif
-    if (check.CheckSubgraphIsomorphism()) {
-      VF3NodeSorter<data_t, Empty, SubIsoNodeProbability<data_t, Empty> >
-          sorter(&targ_graph);
-      std::vector<nodeID_t> sorted = sorter.SortNodes(&patt_graph);
-
-#ifdef TRACE
-      me->InitTrace(outfilename);
-#endif
-
-      state_t s0(&patt_graph, &targ_graph, class_patt.data(), class_targ.data(),
-                 classes_count, sorted.data());
-      me->FindAllMatchings(s0);
-#ifdef TRACE
-      me->FlushTrace();
-#endif
-    }
-
-#ifndef TRACE
-    gettimeofday(&end, NULL);
-
-    totalExecTime += GetElapsedTime(iter, end);
-    end = me->GetFirstSolutionTime();
-    timeFirst += GetElapsedTime(iter, end);
-  } while (totalExecTime < opt.repetitionTimeLimit);
-  timeAll = totalExecTime / rep;
-  timeFirst /= rep;
-
-  if (opt.storeSolutions) {
-    me->GetSolutions(solutions);
-    std::cout << "Solution Found" << std::endl;
-    std::vector<MatchingSolution>::iterator it;
-    for (it = solutions.begin(); it != solutions.end(); it++) {
-      std::cout << me->SolutionToString(*it) << std::endl;
-    }
-  }
-
-#endif
-  sols = me->GetSolutionsCount();
-  if (opt.verbose) {
-    std::cout << "First Solution in: " << timeFirst << std::endl;
-    std::cout << "Matching Finished in: " << timeAll << std::endl;
-    std::cout << "Solutions: " << sols << std::endl;
+  if (opt.format == "vfe") {
+    solve<data_t, data_t, state_t>(opt, graphInPat, graphInTarg, start);
   } else {
-    std::cout << sols << " " << timeFirst << " " << timeAll << std::endl;
+    solve<data_t, Empty, noedgelabel_state_t>(opt, graphInPat, graphInTarg,
+                                              start);
   }
-  delete me;
-  delete pattloader;
-  delete targloader;
+
   return 0;
 }

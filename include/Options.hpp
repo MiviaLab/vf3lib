@@ -141,7 +141,7 @@ bool GetOptions(Options &opt, int argc, char **argv) {
 template <typename Node, typename Edge>
 vflib::ARGLoader<Node, Edge> *CreateLoader(const Options &opt,
                                            std::istream &in) {
-  if (opt.format == "vf") {
+  if (opt.format == "vf" || opt.format == "vfe") {
     return new vflib::FastStreamARGLoader<Node, Edge>(in, opt.undirected);
   } else if (opt.format == "edge") {
     return new vflib::EdgeStreamARGLoader<Node, Edge>(in, opt.undirected);
@@ -150,14 +150,15 @@ vflib::ARGLoader<Node, Edge> *CreateLoader(const Options &opt,
   }
 }
 
-vflib::MatchingEngine<state_t> *CreateMatchingEngine(const Options &opt) {
+template <typename StateType>
+vflib::MatchingEngine<StateType> *CreateMatchingEngine(const Options &opt) {
 #ifdef VF3P
   switch (opt.algo) {
     case VF3PGSS:
-      return new vflib::ParallelMatchingEngine<state_t>(
+      return new vflib::ParallelMatchingEngine<StateType>(
           opt.numOfThreads, opt.storeSolutions, opt.lockFree, opt.cpu);
     case VF3PWLS:
-      return new vflib::ParallelMatchingEngineWLS<state_t>(
+      return new vflib::ParallelMatchingEngineWLS<StateType>(
           opt.numOfThreads, opt.storeSolutions, opt.lockFree, opt.cpu,
           opt.ssrHighLimit, opt.ssrLocalStackLimit);
     default:
@@ -167,7 +168,7 @@ vflib::MatchingEngine<state_t> *CreateMatchingEngine(const Options &opt) {
       return nullptr;
   }
 #elif defined(VF3) || defined(VF3L)
-  return new vflib::MatchingEngine<state_t>(opt.storeSolutions);
+  return new vflib::MatchingEngine<StateType>(opt.storeSolutions);
 #endif
 }
 
