@@ -42,6 +42,7 @@ The following additional parameters can be added to the commandline:
 * -s Print all the solutions (not only the number of solutions found) (Default: false)
 * -f Loader file format. Using this parameter you can specify the format of the graphs to be loaded: (Default: vf)
   * vf: stanard VF file format. Commonl used by the MIVIA Graph datasets
+  * vfe: Same as VF but also supports edge labels
   * edge: Edge file format commonly used on VLDB datasets such as (Patents, WebGoogle, etc...)
 
 ### VF3P additional parameters
