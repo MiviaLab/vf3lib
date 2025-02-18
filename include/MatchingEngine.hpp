@@ -123,7 +123,8 @@ namespace vflib
 			std::stringstream ss;
 			for(it = sol.begin(); it != sol.end(); it++)
 			{
-				ss << it->second << "," << it->first << ":";
+				//ss << it->second << "," << it->first << ":";
+				ss << it->first << "," << it->second << ":";
 				/*if(it+1 != sol.end())
 				{
 					ss << ":";
