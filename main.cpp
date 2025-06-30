@@ -121,13 +121,13 @@ int32_t main(int32_t argc, char** argv)
 #endif
 
 	gettimeofday(&start, NULL);
-	std::cout << "Solving edge-induced subgraph isomorphism problem? " << opt.edgeInduced << std::endl;
+	// std::cout << "Solving edge-induced subgraph isomorphism problem? " << opt.edgeInduced << std::endl;
 	std::ifstream graphInPat(opt.pattern);
 	std::ifstream graphInTarg(opt.target);
 
-	std::cout << "Loading pattern graph: " << opt.pattern << std::endl;
+	// std::cout << "Loading pattern graph: " << opt.pattern << std::endl;
 	ARGLoader<data_t, Empty>* pattloader = CreateLoader<data_t, Empty>(opt, graphInPat);
-	std::cout << "Loading target graph: " << opt.target << std::endl;
+	// std::cout << "Loading target graph: " << opt.target << std::endl;
   	ARGLoader<data_t, Empty>* targloader = CreateLoader<data_t, Empty>(opt, graphInTarg);
 
 	ARGraph<data_t, Empty> patt_graph(pattloader);

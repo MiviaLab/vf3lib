@@ -20,7 +20,7 @@ If you use VF3 please don't forget to cite us!
 
 ## How To Use It
 The provided Makefile will produce three different executables:
-- VF3: The algorith whit all the heustics
+- VF3: The algorith whit all the heuristics
 - VF3L: A lightweight version, where the look-ahead is deactivated. This version fit for sparse or small graphs.
 - VF3P: A parallel version of VF3L, to be used when the problem is really hard! 
 

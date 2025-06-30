@@ -415,6 +415,7 @@ namespace vflib
 		// Check the 'out' edges of node2
 		if(!edgeInduced)
 		{
+			// std::cout << "Node-induced constraint" << std::endl;
 			for (i = 0; i < g2->OutEdgeCount(node2); i++)
 			{
 				other2 = g2->GetOutEdge(node2, i);

@@ -646,6 +646,7 @@ namespace vflib
 			{
 				if(!edgeInduced)
 				{
+					// std::cout << "Node-induced constraint" << std::endl;
 					other1 = core_2[other2];
 					if (!g1->HasEdge(node1, other1))
 						return false;
@@ -677,6 +678,7 @@ namespace vflib
 			{
 				if(!edgeInduced)
 				{
+					// std::cout << "Node-induced constraint" << std::endl;
 					other1 = core_2[other2];
 					if (!g1->HasEdge(other1, node1))
 						return false;

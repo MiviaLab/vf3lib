@@ -13,7 +13,7 @@ TIMEOUT_MAX = 3600 # 1 hrs
 
 def run_vf3(exe_path: str, res_dir: str, log_file: str, error_file: str, query_path: str, target_path: str, results_dict: dict, args: list, query_size: str, query_indx: str, labels: str):
     
-    print("Running VF3-CPU")
+    print("Running VF3")
     command = [exe_path, query_path, target_path] + args
     print(command)
     # query_size = query_path.split('/')[3]
@@ -41,8 +41,7 @@ def run_vf3(exe_path: str, res_dir: str, log_file: str, error_file: str, query_p
                 rows = f.readlines()
                 
             for indx, row in enumerate(rows):
-                
-                if indx == 1:
+                if indx == 0:
                     num_sol = int(row.split(' ')[0])
                     first_solution_time = float(row.split(' ')[-1].split(' ')[0])
                     running_time = float(row.split(' ')[-1].split('\n')[0])
@@ -66,7 +65,8 @@ def run_vf3(exe_path: str, res_dir: str, log_file: str, error_file: str, query_p
             results_dict[query_size][query_indx][labels]['success'] = 0
             results_dict[query_size][query_indx][labels]['error_info'] = error_str     
             
-    except:
+    except Exception as e:
+        print(f"Error: {e}")
        
         results_dict[query_size][query_indx][labels]['success'] = 0
         results_dict[query_size][query_indx][labels]['error_info'] = 'Timeout'
@@ -93,7 +93,7 @@ if __name__ == '__main__':
     parser.add_argument('--dataset_name', type=str,
                         default='DBLP')
     parser.add_argument('--bin_path', type=str, default='/graph-matching-analysis/baseline_algorithms/vf3lib/bin')
-    parser.add_argument('--node_induced', type=int, default=True)
+    parser.add_argument('--edge_induced', type=bool, default=False)
     parser.add_argument('--graphs_induced', type=bool, default=True)
     parser.add_argument('--resume', type=bool, default=False)
     parser.add_argument('--resume_file', type=str, default='')
@@ -109,7 +109,7 @@ if __name__ == '__main__':
         with open(args.resume_file, 'r') as f:
             results_dict = json.load(f)
         
-    print(f"Node Induced: {args.node_induced} - Graphs Induced: {args.graphs_induced} - Undirected: {args.undirected} - Light: {args.light}")
+    print(f"Node Induced: {not args.edge_induced} - Graphs Induced: {args.graphs_induced} - Undirected: {args.undirected} - Light: {args.light}")
     
 
     print(f"Testing Query Size: {args.query_size}")
@@ -127,9 +127,9 @@ if __name__ == '__main__':
         LABEL_SIZE = ['-1']
     
     # # create log file 
-    log_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), f"log_{args.dataset_name}_graphs_induced_{args.graphs_induced}_node_induced_{args.node_induced}_undirected_{args.undirected}_vf_light_{args.light}_query_size_{args.query_size}.txt")
-    
-    error_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), f"log_{args.dataset_name}_graphs_induced_{args.graphs_induced}_node_induced_{args.node_induced}_undirected_{args.undirected}_vf_light_{args.light}_query_size_{args.query_size}_graphs_error.txt")
+    log_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), f"log_{args.dataset_name}_graphs_induced_{args.graphs_induced}_node_induced_{not args.edge_induced}_undirected_{args.undirected}_vf_light_{args.light}_query_size_{args.query_size}.txt")
+
+    error_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), f"log_{args.dataset_name}_graphs_induced_{args.graphs_induced}_node_induced_{not args.edge_induced}_undirected_{args.undirected}_vf_light_{args.light}_query_size_{args.query_size}_graphs_error.txt")
 
     
     for label_indx, label_size in enumerate(LABEL_SIZE):
@@ -154,7 +154,7 @@ if __name__ == '__main__':
             data_path = f"{args.database_foder}/data.grf"
             
         for idx, query_file in enumerate(query_files):
-            # print(query_file)
+            print(query_file)
             
             qs = query_file.split('/')[3] if args.dataset_name == 'DBLP' else query_file.split('/')[-2] 
             if args.dataset_name == 'DBLP':
@@ -205,10 +205,11 @@ if __name__ == '__main__':
                     exe_path = f"{args.bin_path}/vf3"
                 else:
                     exe_path = f"{args.bin_path}/vf3l"
-                    
-                if not args.node_induced:
-                    args_vf.append('-i')    
-                
+
+                if args.edge_induced:
+                    # use the flag -e for edge induced subgraph isomorphism
+                    args_vf.append('-e')
+
                 if args.undirected:
                     args_vf.append('-u')    
           
