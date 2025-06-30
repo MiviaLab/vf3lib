@@ -6,8 +6,8 @@ The latest version of vf3lib includes new graph loaders and the parallel version
 
 The library is allows to solve: 
 * Graph Isomorphism
-* Subgraph Isomorphism
-* Monomorphism (Non-induced subgraph isomorphism) - *Very Soon!*
+* Subgraph Isomorphism, also knwon as **node-induced**
+* Monomorphism (Non-induced subgraph isomorphism), also known as **edge-induced**
 
 ## References
 
@@ -28,15 +28,24 @@ If you wish to use the sequential version of VF (VF3 or VF3L) execute the follow
 
 > vf3 [pattern] [target]
 
+### Node-Induced
 ```bash
 $./bin/vf3 ./test/bvg1.sub.grf ./test/bvg1.grf
 8 6.34141e-06 1.27038e-05
 ```
 
+### Edge-Induced
+```bash
+$./bin/vf3 ./test/bvg1.sub.grf ./test/bvg1.grf -e
+22 3.99195e-06 1.5212e-05
+```
+
+
 The standard output provided by the algorithm is: [number of solutions found] [time to find the first solution] [time to find all the solutions]
 
 The following additional parameters can be added to the commandline:
 * -r Repetition time limit in seconds. The matching is repeted multiple times until the overall execution time breaches the given repetition time limit. The proposed execution time provided by the executable is the average value among all the executions performed. To be used when you wish to benchmark the algorithm on very small graphs, where the execution time of a single run is extremely small (eg. milliseconds), on order to get the execution time properly. (Default: 1 sec)
+* -e Run the algorithm to solve the **edge-induced** variation of the problem.
 * -u Force the loader to read the graphs as undirected. (Default: false)
 * -v Verbose mode. Additional time information are provides, such as loading time. (Default: false)
 * -s Print all the solutions (not only the number of solutions found) (Default: false)

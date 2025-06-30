@@ -30,7 +30,7 @@ struct OptionStructure
 	bool verbose;
 	std::string format;
 	float repetitionTimeLimit;
-	bool induced;
+	bool edgeInduced;
 	OptionStructure() : pattern(nullptr),
 						target(nullptr),
 						undirected(false),
@@ -45,8 +45,10 @@ struct OptionStructure
 #endif
 						verbose(0),
 						format("vf"),
-						induced(true),
-						repetitionTimeLimit(1){}
+						edgeInduced(false), // by default the algorithm solves the node-induced subgraph isomorphism problem
+						repetitionTimeLimit(1)
+	{
+	}
 };
 
 typedef OptionStructure Options;
@@ -81,7 +83,7 @@ bool GetOptions(Options &opt, int argc, char **argv)
 #ifdef VF3P
 	std::string optionstring = ":a:c:t:r:f:h:l:sukv";
 #else
-  std::string optionstring = ":r:f:suvi";
+  std::string optionstring = ":r:f:suve";
 #endif
 
 	char option;
@@ -109,14 +111,14 @@ bool GetOptions(Options &opt, int argc, char **argv)
 				opt.ssrLocalStackLimit = atoi(optarg);
 				break;
 #endif
-      case 's':
+      		case 's':
 				opt.storeSolutions = true;
 				break;
 			case 'r':
 				opt.repetitionTimeLimit = atof(optarg);
        		 	break;
-			case 'i':
-				opt.induced = false;
+			case 'e':
+				opt.edgeInduced = true; // solve the edge-induced subgraph isomorphism problem
 				break;
       		case 'u':
 				opt.undirected = true;
@@ -180,7 +182,7 @@ vflib::MatchingEngine<state_t>* CreateMatchingEngine(const Options& opt)
 			return nullptr;
 	}
 #elif defined(VF3) || defined(VF3L)
-    return new vflib::MatchingEngine<state_t >(opt.storeSolutions, opt.induced);
+    return new vflib::MatchingEngine<state_t >(opt.storeSolutions, opt.edgeInduced);
 #endif
 }
 

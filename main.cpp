@@ -121,7 +121,7 @@ int32_t main(int32_t argc, char** argv)
 #endif
 
 	gettimeofday(&start, NULL);
-	std::cout << "Solving node-induced subgraph isomorphism problem? " << opt.induced << std::endl;
+	std::cout << "Solving edge-induced subgraph isomorphism problem? " << opt.edgeInduced << std::endl;
 	std::ifstream graphInPat(opt.pattern);
 	std::ifstream graphInTarg(opt.target);
 
@@ -200,7 +200,7 @@ int32_t main(int32_t argc, char** argv)
 			me->InitTrace(outfilename);
 			#endif
 			
-			state_t s0(&patt_graph, &targ_graph, class_patt.data(), class_targ.data(), classes_count, sorted.data(), opt.induced); 
+			state_t s0(&patt_graph, &targ_graph, class_patt.data(), class_targ.data(), classes_count, sorted.data(), opt.edgeInduced); 
 			me->FindAllMatchings(s0);
 			
 #ifdef TRACE

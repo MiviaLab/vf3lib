@@ -93,7 +93,7 @@ namespace vflib
 		static long long  instance_count;
 		VF3State(ARGraph<Node1, Edge1> *g1, ARGraph<Node2, Edge2> *g2,
 			uint32_t* class_1, uint32_t* class_2, uint32_t nclass,
-			nodeID_t* order = NULL, bool induced = true);
+			nodeID_t* order = NULL, bool edgeInduced = false);
 		VF3State(const VF3State &state);
 		~VF3State();
 		inline ARGraph<Node1, Edge1> *GetGraph1() const { return g1; }
@@ -115,8 +115,8 @@ namespace vflib
 		typename NodeComparisonFunctor, typename EdgeComparisonFunctor>
 		VF3State<Node1, Node2, Edge1, Edge2, NodeComparisonFunctor, EdgeComparisonFunctor>
 			::VF3State(ARGraph<Node1, Edge1> *ag1, ARGraph<Node2, Edge2> *ag2, 
-				uint32_t* class_1, uint32_t* class_2, uint32_t nclass, nodeID_t* order, bool induced)
-			:State(ag1->NodeCount(), ag2->NodeCount(), order, induced)
+				uint32_t* class_1, uint32_t* class_2, uint32_t nclass, nodeID_t* order, bool edgeInduced)
+			:State(ag1->NodeCount(), ag2->NodeCount(), order, edgeInduced)
 	{
 		assert(class_1 != NULL && class_2 != NULL);
 
@@ -654,8 +654,7 @@ namespace vflib
 			c_other = class_2[other2];
 			if (core_2[other2] != NULL_NODE)
 			{
-				// std::cout << "Induced " << induced << "\n";
-				if(induced)
+				if(!edgeInduced)
 				{
 					other1 = core_2[other2];
 					if (!g1->HasEdge(node1, other1))
@@ -686,8 +685,7 @@ namespace vflib
 			c_other = class_2[other2];
 			if (core_2[other2] != NULL_NODE)
 			{
-				// std::cout << "Induced " << induced << "\n";
-				if(induced)
+				if(!edgeInduced)
 				{
 					other1 = core_2[other2];
 					if (!g1->HasEdge(other1, node1))
@@ -712,8 +710,7 @@ namespace vflib
 		}
 
 		//Look-ahead check
-		// std::cout << "Induced " << induced << "\n";
-		if(induced)
+		if(!edgeInduced)
 		{
 			if (termin1[core_len] == termin2 && termout1[core_len] == termout2) {
 				for (i = 0; i < classes_count; i++) {

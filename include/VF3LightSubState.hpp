@@ -62,7 +62,7 @@ namespace vflib
 		static long long instance_count;
 		VF3LightSubState(ARGraph<Node1, Edge1> *g1, ARGraph<Node2, Edge2> *g2,
 			uint32_t* class_1, uint32_t* class_2, uint32_t nclass,
-			nodeID_t* order = NULL, bool induced = true);
+			nodeID_t* order = NULL, bool edgeInduced = false);
 		VF3LightSubState(const VF3LightSubState &state);
 		~VF3LightSubState();
 		inline ARGraph<Node1, Edge1> *GetGraph1() const { return g1; }
@@ -85,8 +85,8 @@ namespace vflib
 		typename NodeComparisonFunctor, typename EdgeComparisonFunctor>
 		VF3LightSubState<Node1, Node2, Edge1, Edge2, NodeComparisonFunctor, EdgeComparisonFunctor>
 			::VF3LightSubState(ARGraph<Node1, Edge1> *ag1, ARGraph<Node2, Edge2> *ag2, 
-					uint32_t* class_1, uint32_t* class_2, uint32_t nclass, nodeID_t* order, bool induced)
-					:State(ag1->NodeCount(), ag2->NodeCount(), order, induced)
+					uint32_t* class_1, uint32_t* class_2, uint32_t nclass, nodeID_t* order, bool edgeInduced)
+					:State(ag1->NodeCount(), ag2->NodeCount(), order, edgeInduced)
 	{
 		assert(class_1 != NULL && class_2 != NULL);
 
@@ -413,7 +413,7 @@ namespace vflib
 		}
 
 		// Check the 'out' edges of node2
-		if(induced)
+		if(!edgeInduced)
 		{
 			for (i = 0; i < g2->OutEdgeCount(node2); i++)
 			{

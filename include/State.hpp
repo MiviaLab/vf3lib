@@ -27,7 +27,7 @@ namespace vflib
 		const State* parent;
 		bool used;
 
-		bool induced;
+		bool edgeInduced; //If true, the algorithm solves the edge-induced subgraph isomorphism problem
 		nodeID_t *order;
 
 		#ifdef TRACE
@@ -52,11 +52,11 @@ namespace vflib
 		virtual void BackTrack() = 0;
 
 	public:
-		State(uint32_t n1, uint32_t n2, nodeID_t* order, bool induced)
+		State(uint32_t n1, uint32_t n2, nodeID_t *order, bool edgeInduced)
 		{
 
 			this->order = order;
-			this->induced = induced;
+			this->edgeInduced = edgeInduced;
 			this->n1 = n1;
 			this->n2 = n2;
 
@@ -91,7 +91,7 @@ namespace vflib
 		State(const State& state)
 		{
 			order = state.order;
-			induced = state.induced;
+			edgeInduced = state.edgeInduced;
 
 			n1 = state.n1;
 			n2 = state.n2;

@@ -71,17 +71,17 @@ namespace vflib
 		uint32_t solCount;
 		bool storeSolutions;
 		struct timeval fist_solution_time;
-		bool induced;
+		bool edgeInduced;
 
 #ifdef TRACE
 		StateTrace *trace;
 		#endif
 
 	public:
-		MatchingEngine(bool storeSolutions = false, bool induced = true): visit(NULL), 
-			solCount(0), induced(induced), storeSolutions(storeSolutions){};
+		MatchingEngine(bool storeSolutions = false, bool edgeInduced = false): visit(NULL), 
+			solCount(0), edgeInduced(edgeInduced), storeSolutions(storeSolutions){};
 
-		MatchingEngine(MatchingVisitor<VFState> *visit, bool storeSolutions = false, bool induced = true) : visit(visit), solCount(0), induced(induced), storeSolutions(storeSolutions) {}
+		MatchingEngine(MatchingVisitor<VFState> *visit, bool storeSolutions = false, bool edgeInduced = false) : visit(visit), solCount(0), edgeInduced(edgeInduced), storeSolutions(storeSolutions) {}
 
 #ifdef TRACE
 		inline void FlushTrace()
