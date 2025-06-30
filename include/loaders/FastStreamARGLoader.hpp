@@ -52,6 +52,14 @@ FastStreamARGLoader<Node,Edge>
     if (!in.good())
       error("End of file or reading error");
 
+    // Ignoring lines starting with '#'
+    std::string line;
+    while (in.peek() == '#') {
+        std::getline(in, line);
+        if (!in.good())
+            error("End of file or reading error");
+    }
+
     in >> node_count;
     nodes.resize(node_count);
     edges.resize(node_count);
