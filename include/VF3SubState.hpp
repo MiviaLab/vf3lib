@@ -644,6 +644,7 @@ namespace vflib
 			c_other = class_2[other2];
 			if (core_2[other2] != NULL_NODE)
 			{
+				// std::cout << "Induced " << induced << "\n";
 				if(induced)
 				{
 					other1 = core_2[other2];
@@ -675,6 +676,7 @@ namespace vflib
 			c_other = class_2[other2];
 			if (core_2[other2] != NULL_NODE)
 			{
+				// std::cout << "Induced " << induced << "\n";
 				if(induced)
 				{
 					other1 = core_2[other2];

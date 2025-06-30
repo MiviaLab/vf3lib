@@ -154,6 +154,7 @@ namespace vflib
 
 			for (i = 0; i < nodeCount; i++)
 			{
+				// std::cout << "Node: " << i << " - " << pattern->EdgeCount(i) << " - " << probability->GetProbability(pattern, i) << std::endl;
 				nodes[i] = new VF3SortingNode(i, pattern->EdgeCount(i), probability->GetProbability(pattern, i));
 			}
 

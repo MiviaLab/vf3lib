@@ -1,16 +1,11 @@
-#!/bin/sh
+#!/bin/bash
 export CUDA_VISIBLE_DEVICES=0
 cd ../
 result1=result.log/
 file1=result
 rm -rf result.log/*.*
 
-QUERY_TEST=/dataset/DBLP
-TARGET_TEST=/dataset/DBLP
-
-QUERY_TARGET_NAMES=("query_8.sub.grf data.grf" "query_16.sub.grf data.grf" "query_32.sub.grf data.grf" "query_64.sub.grf data.grf")
-
-# QUERY_TARGET_NAMES=("query_16_uniform_label.sub.grf data_uniform_label.grf" "query_32_uniform_label.sub.grf data_uniform_label.grf" "query_64_uniform_label.sub.grf data_uniform_label.grf")
+QUERY_TARGET_NAMES=("/graph-matching-analysis/baseline_algorithms/tdfs/data/pattern/12_vf.sub.grf /graph-matching-analysis/baseline_algorithms/tdfs/convertion_scripts/com-youtube.ungraph_vf.grf")
 
 for i in "${QUERY_TARGET_NAMES[@]}"; do
     # Split the element into two parts
@@ -20,20 +15,22 @@ for i in "${QUERY_TARGET_NAMES[@]}"; do
     # Print the two strings
     echo "Query: $QUERY_NAME - Target string: $TARGET_NAME"
 
-    QUERY_TEST=/dataset/DBLP/${QUERY_NAME}
-    TARGET_TEST=/dataset/DBLP/${TARGET_NAME}
+    QUERY_TEST=/${QUERY_NAME}
+    TARGET_TEST=/${TARGET_NAME}
 
     if [ $1 -eq 1 ]; then
-        cuda-gdbserver localhost:1236 bin/vf3 ${QUERY_TEST} ${TARGET_TEST} -s -v
+        gdbserver localhost:1236 bin/vf3 ${QUERY_TEST} ${TARGET_TEST} -i -u
     else
-        ./bin/vf3 ${QUERY_TEST} ${TARGET_TEST} -s -v
+        ./bin/vf3 ${QUERY_TEST} ${TARGET_TEST} -u
     fi
-    echo $'\n######################################\n'
+
+    echo $'\n#####################################\n'
 done
 
 # if [ $1 -eq 1 ]; then
-#     cuda-gdbserver localhost:1236 bin/vf3 ${QUERY_TEST} ${TARGET_TEST} -s -v
+#     cuda-gdbserver localhost:1236 bin/vf3 ${QUERY_TEST} ${TARGET_TEST} -s -v -u
 # else
 #     ./bin/vf3 ${QUERY_TEST} ${TARGET_TEST} -s -v
 # fi
 cd bash
+/user/frosa/graph_matching

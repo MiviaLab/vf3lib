@@ -623,7 +623,7 @@ namespace vflib
 
 			for (j = 0; j < k; j++)
 			{
-                                nodeID_t n2 = loader->GetOutEdge(i, j,
+				nodeID_t n2 = loader->GetOutEdge(i, j,
                                                      &out_attr[i][j]);
 				out[i][j]=n2;
                                 revmap[n2][i]=out_attr[i][j];

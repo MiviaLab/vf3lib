@@ -5,6 +5,8 @@
 #include <string>
 #include <time.h>
 #include <algorithm>
+#include <chrono>
+#include <future>
 #ifndef WIN32
 #include <csignal>
 #include <unistd.h>
@@ -61,12 +63,14 @@ std::string& remove_chars(std::string& s, const std::string& chars) {
 #endif
 
 static long long state_counter = 0;
+const int TIMEOUT_MS = 5000;
 
 int32_t main(int32_t argc, char** argv)
 {
 	Options opt;
 
 	uint32_t n1, n2;
+	bool timeout_flag = 0;
 	double timeAll = 0;
 	double totalExecTime= 0;
 	double timeFirst = 0;
@@ -117,12 +121,14 @@ int32_t main(int32_t argc, char** argv)
 #endif
 
 	gettimeofday(&start, NULL);
-
+	std::cout << "Solving node-induced subgraph isomorphism problem? " << opt.induced << std::endl;
 	std::ifstream graphInPat(opt.pattern);
 	std::ifstream graphInTarg(opt.target);
 
+	std::cout << "Loading pattern graph: " << opt.pattern << std::endl;
 	ARGLoader<data_t, Empty>* pattloader = CreateLoader<data_t, Empty>(opt, graphInPat);
-	ARGLoader<data_t, Empty>* targloader = CreateLoader<data_t, Empty>(opt, graphInTarg);
+	std::cout << "Loading target graph: " << opt.target << std::endl;
+  	ARGLoader<data_t, Empty>* targloader = CreateLoader<data_t, Empty>(opt, graphInTarg);
 
 	ARGraph<data_t, Empty> patt_graph(pattloader);
 	ARGraph<data_t, Empty> targ_graph(targloader);
@@ -180,15 +186,27 @@ int32_t main(int32_t argc, char** argv)
 	#endif
 		if(check.CheckSubgraphIsomorphism())
 		{
-			VF3NodeSorter<data_t, Empty, SubIsoNodeProbability<data_t, Empty> > sorter(&targ_graph);
+			//
+			VF3NodeSorter<data_t, Empty, SubIsoNodeProbability<data_t, Empty>> sorter(&targ_graph);
 			std::vector<nodeID_t> sorted = sorter.SortNodes(&patt_graph);
+
+			// std::cout << "Sorted nodes: ";
+			// for (auto i : sorted)
+			// 	std::cout << i << " ";
+			// std::cout << std::endl;
+			
 
 			#ifdef TRACE
 			me->InitTrace(outfilename);
 			#endif
-
-			state_t s0(&patt_graph, &targ_graph, class_patt.data(), class_targ.data(), classes_count, sorted.data());
+			
+			state_t s0(&patt_graph, &targ_graph, class_patt.data(), class_targ.data(), classes_count, sorted.data(), opt.induced); 
 			me->FindAllMatchings(s0);
+			
+#ifdef TRACE
+				me->FlushTrace();
+#endif
+
 			#ifdef TRACE
 			me->FlushTrace();
 			#endif
@@ -196,14 +214,16 @@ int32_t main(int32_t argc, char** argv)
 		}
 
 	#ifndef TRACE
-		gettimeofday(&end,NULL);
-
-		totalExecTime += GetElapsedTime(iter, end);
-		end = me->GetFirstSolutionTime();
-		timeFirst += GetElapsedTime(iter, end);
+		
+			gettimeofday(&end, NULL);
+			totalExecTime += GetElapsedTime(iter, end);
+			end = me->GetFirstSolutionTime();
+			timeFirst += GetElapsedTime(iter, end);
+		
 	} while (totalExecTime < opt.repetitionTimeLimit);
 	timeAll = totalExecTime/rep;
 	timeFirst /= rep;
+
 
 	if(opt.storeSolutions)
 	{
@@ -225,7 +245,7 @@ int32_t main(int32_t argc, char** argv)
 		 std::cout<<"Solutions: "<<sols<<std::endl;
 	}else
 	{
-		std::cout << sols << " " << timeFirst << " " << timeAll <<std::endl;
+		std::cout << sols << " " << timeFirst << " " << timeAll << std::endl;
 	}
 	delete me;
   	delete pattloader;

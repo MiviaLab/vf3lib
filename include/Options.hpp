@@ -30,23 +30,23 @@ struct OptionStructure
 	bool verbose;
 	std::string format;
 	float repetitionTimeLimit;
-
-	OptionStructure():
-		pattern(nullptr),
-		target(nullptr),
-		undirected(false),
-		storeSolutions(false),
+	bool induced;
+	OptionStructure() : pattern(nullptr),
+						target(nullptr),
+						undirected(false),
+						storeSolutions(false),
 #ifdef VF3P
-		algo(1),
-		cpu(-1),
-		numOfThreads(1),
-		lockFree(0),
-		ssrHighLimit(3),
-		ssrLocalStackLimit(10),
+						algo(1),
+						cpu(-1),
+						numOfThreads(1),
+						lockFree(0),
+						ssrHighLimit(3),
+						ssrLocalStackLimit(10),
 #endif
-		verbose(0),
-		format("vf"),
-		repetitionTimeLimit(1){}
+						verbose(0),
+						format("vf"),
+						induced(true),
+						repetitionTimeLimit(1){}
 };
 
 typedef OptionStructure Options;
@@ -81,7 +81,7 @@ bool GetOptions(Options &opt, int argc, char **argv)
 #ifdef VF3P
 	std::string optionstring = ":a:c:t:r:f:h:l:sukv";
 #else
-  std::string optionstring = ":r:f:suv";
+  std::string optionstring = ":r:f:suvi";
 #endif
 
 	char option;
@@ -114,7 +114,10 @@ bool GetOptions(Options &opt, int argc, char **argv)
 				break;
 			case 'r':
 				opt.repetitionTimeLimit = atof(optarg);
-        break;
+       		 	break;
+			case 'i':
+				opt.induced = false;
+				break;
       		case 'u':
 				opt.undirected = true;
 				break;
@@ -177,7 +180,7 @@ vflib::MatchingEngine<state_t>* CreateMatchingEngine(const Options& opt)
 			return nullptr;
 	}
 #elif defined(VF3) || defined(VF3L)
-    return new vflib::MatchingEngine<state_t >(opt.storeSolutions);
+    return new vflib::MatchingEngine<state_t >(opt.storeSolutions, opt.induced);
 #endif
 }
 

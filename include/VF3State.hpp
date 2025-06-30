@@ -654,6 +654,7 @@ namespace vflib
 			c_other = class_2[other2];
 			if (core_2[other2] != NULL_NODE)
 			{
+				// std::cout << "Induced " << induced << "\n";
 				if(induced)
 				{
 					other1 = core_2[other2];
@@ -685,6 +686,7 @@ namespace vflib
 			c_other = class_2[other2];
 			if (core_2[other2] != NULL_NODE)
 			{
+				// std::cout << "Induced " << induced << "\n";
 				if(induced)
 				{
 					other1 = core_2[other2];
@@ -710,6 +712,7 @@ namespace vflib
 		}
 
 		//Look-ahead check
+		// std::cout << "Induced " << induced << "\n";
 		if(induced)
 		{
 			if (termin1[core_len] == termin2 && termout1[core_len] == termout2) {
