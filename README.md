@@ -50,7 +50,7 @@ The following additional parameters can be added to the commandline:
 * -v Verbose mode. Additional time information are provides, such as loading time. (Default: false)
 * -s Print all the solutions (not only the number of solutions found) (Default: false)
 * -f Loader file format. Using this parameter you can specify the format of the graphs to be loaded: (Default: vf)
-  * vf: stanard VF file format. Commonl used by the MIVIA Graph datasets
+  * vf: standard VF file format. Commonly used by the MIVIA Graph datasets
   * edge: Edge file format commonly used on VLDB datasets such as (Patents, WebGoogle, etc...)
 
 ### VF3P additional parameters
@@ -90,7 +90,7 @@ An example, represented in hexadecimal, follows:
 ### Text
 On the first line there must be the number of nodes; subsequent lines will contain the node attributes, one node per line, preceded by the node id; node ids must be in the range from 0 to the number of nodes - 1.
 Then, for each node there is the number of edges coming out of the node, followed by a line for each edge containing the ids of the edge ends and the edge attribute. 
-Blank lines, and lines starting with #, are ignored.
+Blank lines, are ignored. The graph file can start with comments. They must start with "#", those lines are ignored.
 An example file, where both node and edge attributes are ints, could be the following:
 
 ```
