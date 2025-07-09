@@ -82,7 +82,7 @@ public:
   VF3ParallelSubState(){}
   VF3ParallelSubState(ARGraph<Node1, Edge1> *g1, ARGraph<Node2, Edge2> *g2,
 		  uint32_t* class_1, uint32_t* class_2, uint32_t nclass,
-                nodeID_t* order = NULL);
+                nodeID_t* order = NULL, bool edgeInduced = false);
   VF3ParallelSubState(const VF3ParallelSubState &state);
   ~VF3ParallelSubState(){}
   VF3ParallelSubState& operator=(const VF3ParallelSubState& state);
@@ -120,12 +120,13 @@ typename Edge1, typename Edge2,
 typename NodeComparisonFunctor, typename EdgeComparisonFunctor>
 VF3ParallelSubState<Node1,Node2,Edge1,Edge2,NodeComparisonFunctor,EdgeComparisonFunctor>
 	::VF3ParallelSubState(ARGraph<Node1, Edge1> *ag1, ARGraph<Node2, Edge2> *ag2,
-			uint32_t* class_1, uint32_t* class_2, uint32_t nclass, nodeID_t* order):
+			uint32_t* class_1, uint32_t* class_2, uint32_t nclass, nodeID_t* order, bool edgeInduced):
       core_1(ag1->NodeCount()),
       core_2(ag2->NodeCount()),
       core_len_c(nclass),
       predecessors(ag1->NodeCount()),
-      dir(ag1->NodeCount())
+      dir(ag1->NodeCount()),
+      edgeInduced(edgeInduced)
 {
   assert(class_1!=NULL && class_2!=NULL);
 
@@ -462,7 +463,9 @@ bool VF3ParallelSubState<Node1,Node2,Edge1,Edge2,NodeComparisonFunctor,EdgeCompa
 
 
   // Check the 'out' edges of node2
-  for(i=0; i<g2->OutEdgeCount(node2); i++)
+  if(!edgeInduced)
+  {
+    for(i=0; i<g2->OutEdgeCount(node2); i++)
     { other2=g2->GetOutEdge(node2, i);
       c_other = class_2[other2];
       if (core_2[other2]!=NULL_NODE)
@@ -470,10 +473,10 @@ bool VF3ParallelSubState<Node1,Node2,Edge1,Edge2,NodeComparisonFunctor,EdgeCompa
           if (!g1->HasEdge(node1, other1))
             return false;
         }
-   }
+    }
 
-  // Check the 'in' edges of node2
-  for(i=0; i<g2->InEdgeCount(node2); i++)
+    // Check the 'in' edges of node2
+    for(i=0; i<g2->InEdgeCount(node2); i++)
     { other2=g2->GetInEdge(node2, i);
       c_other = class_2[other2];
       if (core_2[other2] != NULL_NODE)
@@ -481,8 +484,8 @@ bool VF3ParallelSubState<Node1,Node2,Edge1,Edge2,NodeComparisonFunctor,EdgeCompa
           if (!g1->HasEdge(other1, node1))
             return false;
         }
-   }
-
+    }
+  }
   //std::cout << "\nIs Feasible: " << node1 << " " << node2;
   return true;
 

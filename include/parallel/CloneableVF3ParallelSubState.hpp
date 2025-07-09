@@ -55,7 +55,7 @@ private:
   //int *core_len_c;    //Core set length for each class
 
   int added_node1;    //Last added node
-
+  bool edgeInduced;
   //nodeID_t* predecessors;  //Previous node in the ordered sequence connected to a node
 
   std::vector<nodeID_t>* core_1;
@@ -85,7 +85,7 @@ public:
   CloneableVF3ParallelSubState(){}
   CloneableVF3ParallelSubState(ARGraph<Node1, Edge1> *g1, ARGraph<Node2, Edge2> *g2,
 		  uint32_t* class_1, uint32_t* class_2, uint32_t nclass,
-                nodeID_t* order = NULL);
+                nodeID_t* order = NULL, bool edgeInduced = false);
   CloneableVF3ParallelSubState(const CloneableVF3ParallelSubState &state, bool hard_copy=true);
   ~CloneableVF3ParallelSubState();
   ARGraph<Node1, Edge1> *GetGraph1() { return g1; }
@@ -122,7 +122,7 @@ typename Edge1, typename Edge2,
 typename NodeComparisonFunctor, typename EdgeComparisonFunctor>
 CloneableVF3ParallelSubState<Node1,Node2,Edge1,Edge2,NodeComparisonFunctor,EdgeComparisonFunctor>
 	::CloneableVF3ParallelSubState(ARGraph<Node1, Edge1> *ag1, ARGraph<Node2, Edge2> *ag2,
-			uint32_t* class_1, uint32_t* class_2, uint32_t nclass, nodeID_t* order):
+			uint32_t* class_1, uint32_t* class_2, uint32_t nclass, nodeID_t* order, bool edgeInduced):
       predecessors(ag1->NodeCount()),
 	    dir(ag1->NodeCount())
 {
@@ -145,6 +145,7 @@ CloneableVF3ParallelSubState<Node1,Node2,Edge1,Edge2,NodeComparisonFunctor,EdgeC
   this->class_2 = class_2;
   this->classes_count = nclass;
   core_len=orig_core_len=0;
+  this->edgeInduced = edgeInduced;
 
   added_node1=NULL_NODE;
 
@@ -445,19 +446,22 @@ EdgeComparisonFunctor >::IsFeasiblePair(nodeID_t node1, nodeID_t node2)
     }
 
 
-  // Check the 'out' edges of node2
-  for(i=0; i<g2->OutEdgeCount(node2); i++)
-    { other2=g2->GetOutEdge(node2, i);
-      c_other = class_2[other2];
-      if ((*core_2)[other2]!=NULL_NODE)
+  // Check the 'out' edges of node2i
+  if(!edgeInduced)
+  {
+    for(i=0; i<g2->OutEdgeCount(node2); i++)
+    { 
+        other2=g2->GetOutEdge(node2, i);
+        c_other = class_2[other2];
+        if ((*core_2)[other2]!=NULL_NODE)
         { other1=(*core_2)[other2];
           if (!g1->HasEdge(node1, other1))
             return false;
         }
-   }
+    }
 
-  // Check the 'in' edges of node2
-  for(i=0; i<g2->InEdgeCount(node2); i++)
+    // Check the 'in' edges of node2
+    for(i=0; i<g2->InEdgeCount(node2); i++)
     { other2=g2->GetInEdge(node2, i);
       c_other = class_2[other2];
       if ((*core_2)[other2] != NULL_NODE)
@@ -465,8 +469,8 @@ EdgeComparisonFunctor >::IsFeasiblePair(nodeID_t node1, nodeID_t node2)
           if (!g1->HasEdge(other1, node1))
             return false;
         }
-   }
-
+    }
+  }
   //std::cout << "\nIs Feasible: " << node1 << " " << node2;
   return true;
 
