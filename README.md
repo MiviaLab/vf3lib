@@ -52,6 +52,7 @@ The following additional parameters can be added to the commandline:
 * -f Loader file format. Using this parameter you can specify the format of the graphs to be loaded: (Default: vf)
   * vf: standard VF file format. Commonly used by the MIVIA Graph datasets
   * edge: Edge file format commonly used on VLDB datasets such as (Patents, WebGoogle, etc...)
+* -F Find the first solution only. The algorithm stops the search once the first solution has been found.
 
 ### VF3P additional parameters
 The parallel version has the following extra parameters:

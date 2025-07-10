@@ -201,11 +201,15 @@ int32_t main(int32_t argc, char** argv)
 			#endif
 			
 			state_t s0(&patt_graph, &targ_graph, class_patt.data(), class_targ.data(), classes_count, sorted.data(), opt.edgeInduced); 
-			me->FindAllMatchings(s0);
-			
-#ifdef TRACE
-				me->FlushTrace();
-#endif
+            
+            if(opt.firstOnly)
+            {
+                me->FindFirstMatching(s0);
+            }
+            else
+            {
+                me->FindAllMatchings(s0);
+			}
 
 			#ifdef TRACE
 			me->FlushTrace();
@@ -217,12 +221,23 @@ int32_t main(int32_t argc, char** argv)
 		
 			gettimeofday(&end, NULL);
 			totalExecTime += GetElapsedTime(iter, end);
-			end = me->GetFirstSolutionTime();
-			timeFirst += GetElapsedTime(iter, end);
+			if(!opt.firstOnly)
+            {
+                end = me->GetFirstSolutionTime();
+			    timeFirst += GetElapsedTime(iter, end);
+            }
 		
 	} while (totalExecTime < opt.repetitionTimeLimit);
 	timeAll = totalExecTime/rep;
-	timeFirst /= rep;
+	
+    if(!opt.firstOnly)
+    {
+        timeFirst /= rep;
+    }
+    else
+    {
+        timeFirst = timeAll;
+    }
 
 
 	if(opt.storeSolutions)
@@ -242,7 +257,7 @@ int32_t main(int32_t argc, char** argv)
 	{
 		std::cout<<"First Solution in: "<<timeFirst<<std::endl;
 		std::cout<<"Matching Finished in: "<<timeAll<<std::endl;
-		 std::cout<<"Solutions: "<<sols<<std::endl;
+		std::cout<<"Solutions: "<<sols<<std::endl;
 	}else
 	{
 		std::cout << sols << " " << timeFirst << " " << timeAll << std::endl;

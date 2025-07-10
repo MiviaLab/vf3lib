@@ -19,6 +19,7 @@ struct OptionStructure
 	char *target;
 	bool undirected;
 	bool storeSolutions;
+    bool firstOnly;
 #ifdef VF3P
 	int8_t algo;
 	int16_t cpu;
@@ -35,6 +36,7 @@ struct OptionStructure
 						target(nullptr),
 						undirected(false),
 						storeSolutions(false),
+                        firstOnly(false),
 #ifdef VF3P
 						algo(1),
 						cpu(-1),
@@ -76,6 +78,7 @@ bool GetOptions(Options &opt, int argc, char **argv)
 	* -u Load graphs as undirected
 	* -k LockFree Version
 	* -r Minimum time in second for benchmark repetitions. Default 1.
+	* -F Stop to first solution (not for parallel version)
 	* -s Print Solutions
 	* -f Graph format [vf, edge]
 	* -v Verbose: show all time
@@ -83,7 +86,7 @@ bool GetOptions(Options &opt, int argc, char **argv)
 #ifdef VF3P
 	std::string optionstring = ":a:c:t:r:f:h:l:sukv";
 #else
-  std::string optionstring = ":r:f:suve";
+  std::string optionstring = ":r:f:suveF";
 #endif
 
 	char option;
@@ -129,7 +132,12 @@ bool GetOptions(Options &opt, int argc, char **argv)
 			case 'f':
 				opt.format = std::string(optarg);
 				break;
-			case '?':
+#ifndef VF3P
+            case 'F':
+                opt.firstOnly = true;
+                break;
+#endif
+            case '?':
 				PrintUsage();
 				return false;
 		}
