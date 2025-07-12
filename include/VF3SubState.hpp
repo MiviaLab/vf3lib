@@ -712,15 +712,33 @@ namespace vflib
 		}
 		else return false;
 
-		if (new1[core_len] <= new2)
-		{
-			for (i = 0; i < classes_count; i++) {
-				if (new1_c[core_len][i] > new2_c[i])
-					return false;
-			}
-		}
-		else return false;
-
+        if(!edgeInduced)
+        {
+            if (new1[core_len] <= new2)
+            {
+                for (i = 0; i < classes_count; i++) {
+                    if (new1_c[core_len][i] > new2_c[i])
+                        return false;
+                }
+            }
+            else return false;
+        }
+        else
+        {
+            if(new1[core_len]+termin1[core_len]+termout1[core_len] <= 
+                new2+termin2+termout2)
+            {
+                for (i = 0; i < classes_count; i++) 
+                {
+				    if (termin1_c[core_len][i]+termout1_c[core_len][i]+new1_c[core_len][i] > 
+                            termin2_c[i]+termout2_c[i]+new2_c[i]) 
+                    {
+					    return false;
+				    }
+			    }
+            }
+            else return false;
+        }
 		//std::cout << "\nIs Feasible: " << node1 << " " << node2;
 		return true;
 
