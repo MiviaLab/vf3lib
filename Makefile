@@ -1,5 +1,5 @@
 CC=g++
-CFLAGS= -std=c++11 -Wno-deprecated -O2 #-pg -g
+CFLAGS= -std=c++11 -Wno-deprecated -O2
 LDFLAGSPAR = -pthread -lpthread -latomic
 LDFLAGS=
 CPPFLAGS= -I./include
